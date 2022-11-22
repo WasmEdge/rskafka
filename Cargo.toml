@@ -1,5 +1,5 @@
 [package]
-name = "rskafka"
+name = "rskafka_wasi"
 version = "0.3.0"
 edition = "2021"
 license = "MIT/Apache-2.0"
@@ -9,10 +9,11 @@ keywords = [
     "async",
     "kafka",
     "protocol",
+    "wasi"
 ]
 categories = ["api-bindings"]
 description = " A minimal Rust client for Apache Kafka "
-repository = "https://github.com/influxdata/rskafka/"
+repository = "https://github.com/WasmEdge/rskafka"
 documentation = "https://docs.rs/rskafka/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -33,34 +34,39 @@ rand = "0.8"
 rustls = { version = "0.20", optional = true }
 snap = { version = "1", optional = true }
 thiserror = "1.0"
-tokio = { version = "1.19", default-features = false, features = ["io-util", "net", "rt", "sync", "time", "macros"] }
 tokio-rustls = { version = "0.23", optional = true }
 tracing = "0.1"
 zstd = { version = "0.11", optional = true }
+
+[target.'cfg(not(target_os="wasi"))'.dependencies]
+tokio = { version = "1.19", default-features = false, features = ["io-util", "net", "rt", "sync", "time", "macros"] }
+
+[target.'cfg(target_os="wasi")'.dependencies]
+tokio_wasi = { version = "1.21", default-features = false, features = ["io-util", "net", "rt", "sync", "time", "macros"] }
 
 [dev-dependencies]
 assert_matches = "1.5"
 criterion = { version = "0.4", features = ["async_tokio"] }
 dotenvy = "0.15.1"
 futures = "0.3"
-j4rs = "0.14"
 once_cell = "1.9"
-procspawn = "0.10"
-proptest = "1"
-proptest-derive = "0.3"
 rustls-pemfile = "1.0"
-rdkafka = { version = "0.29", default-features = false, features = ["libz", "tokio", "zstd"] }
-tokio = { version = "1.14", features = ["macros", "rt-multi-thread"] }
 tracing-log = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 uuid = { version = "1.0", features = ["v4"] }
 
+[target.'cfg(not(target_os="wasi"))'.dev-dependencies]
+j4rs = "0.14"
+procspawn = "0.10"
+proptest = "1"
+proptest-derive = "0.3"
+rdkafka = { version = "0.29", default-features = false, features = ["libz", "tokio", "zstd"] }
+tokio = { version = "1.14", features = ["macros", "rt-multi-thread"] }
+
 [features]
 default = [
     "compression-gzip",
-    "compression-lz4",
     "compression-snappy",
-    "compression-zstd",
 ]
 
 full = [
@@ -85,6 +91,8 @@ unstable-fuzzing = []
 [lib]
 # For `cargo bench -- --save-baseline ...`
 # See https://github.com/bheisler/criterion.rs/issues/275.
+name = "rskafka"
+path = "src/lib.rs"
 bench = false
 
 [[bench]]
@@ -94,7 +102,7 @@ harness = false
 [workspace]
 members = [
     ".",
-    "fuzz",
+    # "fuzz",
 ]
 
 [profile.bench]
