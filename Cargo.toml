@@ -13,7 +13,7 @@ keywords = [
 ]
 categories = ["api-bindings"]
 description = " A minimal Rust client for Apache Kafka "
-repository = "https://github.com/WasmEdge/rskafka"
+repository = "https://github.com/WasmEdge/rskafka_wasi"
 documentation = "https://docs.rs/rskafka/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
