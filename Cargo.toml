@@ -42,7 +42,7 @@ zstd = { version = "0.11", optional = true }
 tokio = { version = "1.19", default-features = false, features = ["io-util", "net", "rt", "sync", "time", "macros"] }
 
 [target.'cfg(target_os="wasi")'.dependencies]
-tokio_wasi = { version = "1.21", default-features = false, features = ["io-util", "net", "rt", "sync", "time", "macros"] }
+tokio_wasi = { version = "1", default-features = false, features = ["io-util", "net", "rt", "sync", "time", "macros"] }
 
 [dev-dependencies]
 assert_matches = "1.5"
